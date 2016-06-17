@@ -4,7 +4,7 @@ author: "Leonard D Goldstein"
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('SGSeqBioC2016')`"
 abstract: >
-*SGSeq* is an *R/Bioconductor* package for analyzing annotated or previously uncharacterized splice events from short read RNA-seq data. Input data are sequence reads mapped to a reference genome in BAM format. Gene models are represented as a genome-wide splice graph, which can be obtained from transcript annotation or predicted from the data. Splice events are identified from the graph and are quantified locally using structurally compatible reads that span event boundaries. The workshop introduces *SGSeq* data structures and illustrates typical analysis workflows, including splice event prediction, quantification, visualization and interpretation.
+  *SGSeq* is an *R/Bioconductor* package for analyzing annotated or previously uncharacterized splice events from short read RNA-seq data. Input data are sequence reads mapped to a reference genome in BAM format. Gene models are represented as a genome-wide splice graph, which can be obtained from transcript annotation or predicted from the data. Splice events are identified from the graph and are quantified locally using structurally compatible reads that span event boundaries. The workshop introduces *SGSeq* data structures and illustrates typical analysis workflows, including splice event prediction, quantification, visualization and interpretation.
 vignette: >
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
