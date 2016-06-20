@@ -34,7 +34,7 @@ opts_chunk$set(error = FALSE)
 * The *SGFeatures* class stores features defining a splice graph [@Heber:2002aa]. The splice graph is a directed acyclic graph with edges corresponding to exonic regions and splice junctions, and nodes corresponding to transcript starts, ends and splice sites. It is directed from the 5$^\prime$ end to the 3$^\prime$ end of a gene.
 * The *SGVariants* class stores splice variants. If two nodes in the splice graph are connected by two or more paths and there are no intervening nodes with all paths intersecting, the alternative paths are considered splice variants. Splice variants sharing the same start and end node, together form a splice event.
 
-![**Figure 1.** Overview of *SGSeq* data structures. (**a**) Schematic illustrating transcripts, discrete transcript features, the splice graph, and splice variants. Splice variants are defined in an augmented graph with a unique source and sink node for each gene, which are connected to alternative starts and ends, respectively (dashed lines). (**b**) *SGSeq* representation of concepts shown in (a). Classes are shown in bold and outlined, function names are shown in italics. Dashed arrows indicate functions *analyzeFeatures()* and *analyzeVariants()*, which wrap multiple analysis steps. *SGSeq* makes extensive use of *Bioconductor* infrastructure for genomic ranges [@Lawrence:2013hi]: *TxFeatures* and *SGFeatures* extend *GRanges*, *SGVariants* extends *GRangesList*. *SGFeatureCounts* and *SGVariantCounts* extend *SummarizedExperiment* and are containers for per-sample counts (or other expression values) along with corresponding *SGFeatures* and *SGVariants* objects, respectively. $^\ast$*SGVariantCounts* assay *countsVariant5pOr3p* can only be obtained from BAM files, for details see section [Testing for differential splice variant usage].](classes.png)
+![**Figure 1.** Overview of *SGSeq* data structures. (**a**) Schematic illustrating transcripts, discrete transcript features, the splice graph, and splice variants. Splice variants are defined in an augmented graph with a unique source and sink node for each gene, which are connected to alternative starts and ends, respectively (dashed lines). (**b**) *SGSeq* representation of concepts shown in (a). Classes are shown in bold and outlined, function names are shown in italics. Dashed arrows indicate functions *analyzeFeatures()* and *analyzeVariants()*, which wrap multiple analysis steps. *SGSeq* makes extensive use of *Bioconductor* infrastructure for genomic ranges [@Lawrence:2013hi]: *TxFeatures* and *SGFeatures* extend *GRanges*, *SGVariants* extends *GRangesList*. *SGFeatureCounts* and *SGVariantCounts* extend *SummarizedExperiment* and are containers for per-sample counts (or other expression values) along with corresponding *SGFeatures* and *SGVariants* objects. $^\ast$*SGVariantCounts* assay *countsVariant5pOr3p* can only be obtained from BAM files, for details see section [Testing for differential splice variant usage].](classes.png)
 
 # Preliminaries
 
@@ -196,7 +196,7 @@ Splice variants are quantified locally, based on structurally compatible fragmen
 
 Estimates of relative usage can be unreliable for events with low read count. If argument *min_denominator* is specified for functions *analyzeVariants()* or *getSGVariantCounts()*, estimates are set to *NA* unless at least one of $x_.^S$ or $x_.^E$ is equal or greater to the specified value.
 
-Note that *SGVariantCounts* objects also store raw count data. These data be used for statistical modeling, for example as suggested in section [Testing for differential splice variant usage].
+Note that *SGVariantCounts* objects also store raw count data. These data can be used for statistical modeling, for example as suggested in section [Testing for differential splice variant usage].
 
 ```{r}
 variantFreq(sgvc_pred)
@@ -225,9 +225,9 @@ The output is a data frame with each row describing the effect of a particular s
 
 # Visualization
 
-Functions *plotFeatures* and *plotVariants* support many options for customizing figures. The splice graph in the top panel is plotted by function *plotSpliceGraph*, which can be called directly.
+Functions *plotFeatures()* and *plotVariants()* support many options for customizing figures. The splice graph in the top panel is plotted by function *plotSpliceGraph*, which can be called directly.
 
-*plotFeatures* includes multiple arguments for selecting features to be displayed. The following code block illustrates three different options for plotting the splice graph and expression levels for *FBXO31* (Entrez ID 79791).
+*plotFeatures()* includes multiple arguments for selecting features to be displayed. The following code block illustrates three different options for plotting the splice graph and expression levels for *FBXO31* (Entrez ID 79791).
 
 ```{r, eval = FALSE}
 plotFeatures(sgfc_pred, geneID = 1)
@@ -235,7 +235,7 @@ plotFeatures(sgfc_pred, geneName = "79791")
 plotFeatures(sgfc_pred, which = gr)
 ```
 
-By default, the heatmap generated by *plotFeatures* displays splice junctions. Alternatively, exon bins, or both exon bins and splice junctions can be displayed.
+By default, the heatmap generated by *plotFeatures()* displays splice junctions. Alternatively, exon bins, or both exon bins and splice junctions can be displayed.
 
 ```{r, eval = FALSE}
 plotFeatures(sgfc_pred, geneID = 1, include = "junctions")
@@ -300,7 +300,7 @@ sgvc <- getSGVariantCounts(sgv, sgfc)
 
 # Exercises
 
-**Exercise 1** The *TxFeatures* class represents discrete transcript features (exons and splice junctions). The *convertToTxFeatures()* function can be used to extract *TxFeatures* for known transcripts. One flexible way of specifying known transcripts as input for *convertToTxFeatures()* is a *GRangeList* of exons, whereby each entry of the *GRangesList* corresponds to one transcript. (a) Construct a *GRangesList* for a single transcript with three exons. (b) Convert the *GRangesList* to a *TxFeatures* object. (c) Repeat (a) and (b) to create a second transcript with exons that are shared or overlapping with exons in the first transcript. (d) Combine the two transcripts in a single *GRangesList* and convert it to a *TxFeatures* object. What does the output look like? (e) Convert the *TxFeatures* object from (d) into an *SGFeatures* object. What does the output look like? (f) Use the *plotSpliceGraph()* function to visualize the splice graph corresponding to the two transcripts.
+**Exercise 1** In *SGSeq*, known transcripts can be specified as a *GRangeList* of exons, whereby each entry of the *GRangesList* corresponds to one transcript. (a) Construct a *GRangesList* for a single transcript with three exons. (b) Convert the *GRangesList* to a *TxFeatures* object. (c) Repeat (a) and (b) to create a second transcript with exons that are shared or overlapping with exons in the first transcript. (d) Combine the two transcripts in a single *GRangesList* and convert it to a *TxFeatures* object. How does the output change? (e) Convert the *TxFeatures* object from (d) into an *SGFeatures* object. How does the *TxFeatures* object differ from the *TxFeatures* object? (f) Use the *plotSpliceGraph()* function to visualize the splice graph corresponding to the two transcripts.
 
 ```{r, eval = FALSE}
 tx_1 <- GRangesList(tx_1 = GRanges("1", IRanges(c(101, 301, 501), c(200, 400, 600)), "+"))
@@ -313,7 +313,7 @@ par(mfrow = c(1, 1))
 plotSpliceGraph(sgf)
 ```
 
-The remaining exercises are based on genome-wide predictions obtained from paired-end RNA-seq data that are part of the Illumina Body Map 2.0. The data were processed as shown in the following code block (the code will not run as BAM files are not available as part of the workshop).
+The remaining exercises are based on genome-wide predictions obtained from paired-end RNA-seq data from 16 normal human tissues, which are part of the Illumina Body Map 2.0. The data were processed as shown in the following code block (the code will not run, since BAM files are not available as part of the workshop).
 
 ```{r, eval = FALSE}
 sgfc <- analyzeFeatures(si, alpha = 2, beta = 0.2, gamma = 0.2)
@@ -322,14 +322,14 @@ sgvc <- analyzeVariants(sgfc, min_denominator = 10)
 
 Load the previously generated objects *sgfc* and *sgvc*, and restore *seqlevels* for the *TxDb* object (so all chromosomes are available). Note predictions in *sgfc* and *sgvc* have already been annotated using transcript features from the UCSC knownGene table.
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 data(sgfc, sgvc, package = "SGSeqBioC2016")
 txdb <- restoreSeqlevels(txdb)
 seqlevelsStyle(txdb) <- "NCBI"
 txdb <- keepSeqlevels(txdb, c(1:22, "X", "Y"))
 ```
 
-**Exercise 2** (a) Use function *plotSpliceGraph()* to plot the gene model for gene *KIFAP3* (Entrez ID 22920). (b) Which parts of the predicted gene model are unannotated? (c) Use function *plotFeatures()* to inspect expression levels for splice junctions and exons across the body map tissues.
+**Exercise 2** (a) Use function *plotSpliceGraph()* to plot the gene model for gene *KIFAP3* (Entrez ID 22920). (b) Which parts of the predicted gene model are unannotated? (c) Use function *plotFeatures()* to inspect expression levels for splice junctions or exons across the body map tissues.
 
 ```{r, eval = FALSE}
 sgf <- rowRanges(sgfc)

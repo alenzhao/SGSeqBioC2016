@@ -1,7 +1,7 @@
 Package: SGSeqBioC2016
 Type: Package
 Title: SGSeq workshop BioC 2016
-Version: 0.0.2
+Version: 0.0.1
 Author: Leonard Goldstein
 Maintainer: Leonard Goldstein <goldstel@gene.com>
 Description: 
